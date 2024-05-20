@@ -25,13 +25,18 @@ module.exports = {
         use: ["style-loader", "css-loader"],
       },
       {
-        test: /\.(png|jpg|svg|gif|jpeg)$/i,
+        test: /\.(png|jpg|gif|jpeg)$/i,
         type: "asset/resource",
       },
       {
         test: /\.(ttf|otf|eot|woff|woff2)$/i,
         type: "asset/resource",
       },
+      {
+        test: /\.svg$/,
+        use: "raw-loader",
+      },
+
     ],
   },
 };

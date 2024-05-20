@@ -1,29 +1,53 @@
-import './style.css'
+"use strict";
+import "./style.css";
+import svg1 from "./assets/trash.svg";
 
-export function createPrj(){
-    const getPrj=document.createElement('div');
-    getPrj.classList.add('getPrj');
-    const getPrjForm=document.createElement('div');
-    getPrjForm.classList.add('getPrjForm');
-    const nameLabel=document.createElement('label');
-    nameLabel.textContent='Project Name:'
-    const nameInput=document.createElement('input');
-    nameInput.setAttribute('id','PrjName');
-    nameInput.setAttribute('type','text');
-    nameInput.setAttribute('name','project_name');
-    const submitBtn=document.createElement('button');
-    submitBtn.setAttribute('type','submit');
-    submitBtn.textContent='Submit';
-    const resetBtn=document.createElement('button');
-    resetBtn.setAttribute('type','reset');
-    resetBtn.textContent='Reset'
-    nameLabel.appendChild(nameInput);
-    nameLabel.appendChild(submitBtn);
-    nameLabel.appendChild(resetBtn);
-    getPrjForm.appendChild(nameLabel);
-    getPrj.appendChild(getPrjForm);
+import createElement from "./index.js";
+import { prjList, prjCreate } from "./index.js";
+export function createPrj() {
+  const prjList = document.querySelector(".prjList");
+  if (document.querySelector(".getPrjForm")) {
+    return;
+  }
+  const getPrjForm = createElement("form", "getPrjForm");
+  const nameLabel = createElement("label", "", "Project Name:");
+  nameLabel.setAttribute("for", "PrjName");
+  const nameInput = document.createElement("input");
+  nameInput.setAttribute("id", "PrjName");
+  nameInput.setAttribute("type", "text");
+  nameInput.setAttribute("name", "project_name");
+  const submitBtn = document.createElement("button");
+  submitBtn.setAttribute("type", "submit");
+  submitBtn.textContent = "Submit";
+  const resetBtn = document.createElement("button");
+  resetBtn.setAttribute("type", "reset");
+  resetBtn.textContent = "Reset";
+  nameLabel.appendChild(nameInput);
+  getPrjForm.appendChild(nameLabel);
+  prjList.appendChild(getPrjForm);
 
-    const prjList=document.querySelector('.prjList');
-    const prjCreate=document.querySelector('.prjCreate');
-    prjList.insertBefore(getPrj,prjCreate);
+  const btnContainer = createElement("div", "btnContainer");
+  btnContainer.appendChild(submitBtn);
+  btnContainer.appendChild(resetBtn);
+  getPrjForm.appendChild(btnContainer);
+
+  const prjCreate = document.querySelector(".prjCreate");
+  prjList.insertBefore(getPrjForm, prjCreate);
+  console.log("form created!");
+}
+
+export function submitPrj(e) {
+  e.preventDefault();
+  const formData = new FormData(e.target);
+  const prjName = formData.get("project_name");
+  if (prjName) {
+    const newPrj = createElement("div", "newPrj");
+    const name = createElement("div", "name", prjName);
+    const svgDiv = createElement("div",'trashIcon');
+    svgDiv.innerHTML = svg1;
+    newPrj.appendChild(name);
+    newPrj.appendChild(svgDiv);
+    prjList.insertBefore(newPrj, prjCreate);
+  }
+  e.target.remove();
 }

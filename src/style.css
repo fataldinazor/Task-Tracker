@@ -11,6 +11,9 @@
   --white1: #d1fae5;
   --white2: #ecfdf5;
 }
+svg:hover {
+  cursor: pointer;
+}
 
 button,
 input {
@@ -43,7 +46,7 @@ body {
 
 .container {
   display: grid;
-  grid-template-columns: 1fr 3.5fr;
+  grid-template-columns: 1fr 4fr;
   grid-template-rows: 100px 1fr;
   height: inherit;
 }
@@ -90,7 +93,7 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  gap: 1.5rem;
+  gap: 1rem;
 }
 
 .prjTitle {
@@ -102,6 +105,7 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: start;
+  gap: 10px;
 }
 
 .prjCreate {
@@ -110,7 +114,45 @@ body {
   font-size: 1.5rem;
   font-weight: 600;
   border-radius: 1rem;
-  /* border: 1px solid var(--mint1); */
+  margin-top: 10px;
+}
+
+.getPrjForm {
+  margin: 0 0 10px 0;
+}
+
+.getPrjForm > .btnContainer {
+  display: flex;
+  justify-content: start;
+  gap: 1rem;
+}
+.getPrjForm > .btnContainer > button {
+  margin: 5px 0 0 0;
+  border-radius: 10px;
+  background-color: var(--mint3);
+  padding: 3px 20px;
+}
+
+.getPrjForm > label > input {
+  width: 100%;
+  margin: 5px 0 0 0;
+  border-radius: 10px;
+  padding: 4px;
+  border: none;
+  background-color: var(--white1);
+}
+
+.newPrj {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1rem;
+  padding: 5px 10px;
+  border-radius: 10px;
+  background-color: var(--mint3);
+}
+.newPrj > .name {
+  font-size: 1rem;
+  font-weight: 600;
 }
 
 /* content */
