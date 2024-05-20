@@ -11,7 +11,7 @@
   --white1: #d1fae5;
   --white2: #ecfdf5;
 }
-svg:hover {
+.newPrj>.name,svg:hover {
   cursor: pointer;
 }
 
@@ -172,5 +172,5 @@ body {
   font-size: 2rem;
   text-align: center;
   font-weight: 600;
-  color: var(--mint2);
+  color: var(--white2);
 }

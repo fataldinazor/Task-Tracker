@@ -1,11 +1,11 @@
 "use strict";
 import "./style.css";
 import svg1 from "./assets/trash.svg";
+import { createElement } from "./home.js";
+import { prjList, prjCreate} from "./index.js";
 
-import createElement from "./index.js";
-import { prjList, prjCreate } from "./index.js";
 export function createPrj() {
-  const prjList = document.querySelector(".prjList");
+  // const prjList = document.querySelector(".prjList");
   if (document.querySelector(".getPrjForm")) {
     return;
   }
@@ -32,7 +32,7 @@ export function createPrj() {
   getPrjForm.appendChild(btnContainer);
 
   const prjCreate = document.querySelector(".prjCreate");
-  prjList.insertBefore(getPrjForm, prjCreate);
+  prjList.appendChild(prjCreate);
   console.log("form created!");
 }
 
@@ -51,3 +51,15 @@ export function submitPrj(e) {
   }
   e.target.remove();
 }
+
+export function deletePrjElement(e){
+  if (e.target.classList.contains("trashIcon") || e.target.closest('.trashIcon')) {
+        const prjElement = e.target.closest(".newPrj");
+        if (prjElement) {
+          prjElement.remove();
+          console.log("Project Deleted");
+        }
+      }
+}
+
+
