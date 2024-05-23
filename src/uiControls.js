@@ -94,6 +94,9 @@ const screenController = () => {
     if (event.target.classList.contains("listName")) {
       getTask(event);
     }
+    else if (event.target.classList.contains("addTaskBtn")) {
+      createTaskForm(event.target.id);
+    }
   });
 
   function getTask(e) {
@@ -107,21 +110,37 @@ const screenController = () => {
     displayTasks(listId);
   }
   
-  const taskContainer=createElement('div','taskContainer listId',);
+  const taskContainer=createElement('div','taskContainer listId');
+
+  const getPriorColor=(prior)=>{
+    if(prior=='high')
+    return('FF0000')
+    else if (prior='mid')
+    return('FFFF00');
+    else if (prior='low')
+    return ('00FF00');
+  }
   const displayTasks = (listId) => {
     taskContainer.textContent=''
     const list = listModule.getList(listId);
     list["tasks"].forEach((task) => {
       const taskBlock = createElement("div", "taskBlock");
-      const taskTitle = createElement("div", "taskTitle", task.title);
-      const taskDesc = createElement("div", "taskTitle", task.desc);
-      const taskDate = createElement("div", "taskDate", task.dueDate);
-      const taskPrior=createElement('div','taskPrior',task.priority);
+      const taskTitle = createElement("div", "dispTaskTitle", task.title);
+      const taskDesc = createElement("div", "dispTaskDesc", task.desc);
+      const taskDate = createElement("div", "dispTaskDate", task.dueDate);
+      const taskPrior=createElement('div','dispTaskPrior');
+      const deleteTaskBtn=createElement('div','deleteTaskBtn');
+      deleteTaskBtn.innerHTML=svg1;
+      const color=getPriorColor(list.priority);
+      taskPrior.style.backgroundColor=`#${color}`;
+
       
       taskBlock.appendChild(taskTitle);
       taskBlock.appendChild(taskDesc);
       taskBlock.appendChild(taskDate);
       taskBlock.appendChild(taskPrior);
+      taskBlock.appendChild(deleteTaskBtn);
+
 
       taskContainer.appendChild(taskBlock);
     });
@@ -134,18 +153,20 @@ const screenController = () => {
     contentInit.appendChild(addTaskBtn);
   }
 
-  document.addEventListener("click", function (event) {
-    if (event.target.classList.contains("addTaskBtn")) {
-      createTaskForm(event.target.id);
+  // document.addEventListener("click", function (event) {
+  //   if (event.target.classList.contains("addTaskBtn")) {
+  //     createTaskForm(event.target.id);
+  //   }
+  // });
+  document.addEventListener('keydown',function(event){
+    if(event.key==='Esc'||event.key==='Escape'){
+      const dialog=document.querySelector('dialog');
+      if(contentInit.contains(dialog))
+      contentInit.removeChild(dialog);
     }
-  });
+  })
 
   function createTaskForm(listId) {
-    //later-> making too many dialog boxes in the background reduce them
-    // if(document.querySelector('dialog')){
-    //     return
-    // }
-    // console.log("Hello");
     const idVal = createElement("input");
     idVal.setAttribute("type", "hidden");
     idVal.setAttribute("value", listId);
@@ -155,7 +176,7 @@ const screenController = () => {
     const heading = createElement("h2", "", "Task");
 
     //title
-    const titleLabel = createElement("label", "", "Title:");
+    const titleLabel = createElement("label", "taskTitle", "Title:");
     titleLabel.setAttribute("for", "taskTitle");
     const titleInput = document.createElement("input");
     titleInput.setAttribute("id", "taskTitle");
@@ -164,7 +185,7 @@ const screenController = () => {
     titleLabel.appendChild(titleInput);
 
     //desc
-    const descLabel = createElement("label", "", "Description:");
+    const descLabel = createElement("label", "taskDesc", "Description:");
     descLabel.setAttribute("for", "taskDesc");
     const descInput = document.createElement("textarea");
     descInput.setAttribute("rows", "4");
@@ -175,7 +196,7 @@ const screenController = () => {
     descLabel.appendChild(descInput);
 
     //date
-    const dateLabel = createElement("label", "", "Due Date:");
+    const dateLabel = createElement("label", "taskDate", "Due Date:");
     dateLabel.setAttribute("for", "taskDate");
     const dateInput = document.createElement("input");
     dateInput.setAttribute("id", "taskDueDate");
@@ -183,7 +204,7 @@ const screenController = () => {
     dateInput.setAttribute("name", "task_date");
     dateLabel.appendChild(dateInput);
 
-    const priorLabel = createElement("label", "", "Priority:");
+    const priorLabel = createElement("label", "taskPrior", "Priority:");
     priorLabel.setAttribute("for", "taskPrior");
     const selectTask = createElement(
       "select",
@@ -224,6 +245,7 @@ const screenController = () => {
     contentInit.appendChild(getDialog);
     getDialog.showModal();
   }
+
   const submitTaskForm = (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
@@ -237,13 +259,13 @@ const screenController = () => {
       taskModule.createTask(listId, taskTitle, taskDesc, dueDate, taskPrior);
       console.log(listModule.lists);
     }
-    // prjList.textContent = "";
-    // displayLists();
-    // e.target.remove();
     const dialog = document.querySelector("dialog");
     dialog.close();
+    contentInit.removeChild(dialog);
     displayTasks(listId);
   };
+
+
 };
 
 export { screenController };
