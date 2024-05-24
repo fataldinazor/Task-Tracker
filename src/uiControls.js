@@ -4,6 +4,7 @@ import svg1 from "./assets/trash.svg";
 import * as taskModule from "./task.js";
 import * as listModule from "./list.js";
 import { createElement, createHome, contentInit } from "./homepage.js";
+// import { Module } from "webpack";
 
 const screenController = () => {
   window.addEventListener("load", createHome());
@@ -97,8 +98,12 @@ const screenController = () => {
   
 
   function deleteTask(e) {
-    console.log("Im here");
-    console.log(e.target.parentElement.parentElement.id);
+    // console.log("Im here");
+    const taskId=(e.target.parentElement.parentElement.id);
+    const listId=(e.target.parentElement.parentElement.parentElement.id.slice(5));
+    taskModule.deleteTask(listId,taskId);
+    displayTasks();
+    
   }
 
   function displayLists() {
@@ -116,9 +121,10 @@ const screenController = () => {
 
   function createTaskContainer(listId) {
     const element = createElement("div", "taskContainer");
-    element.setAttribute("id", `list-${listId}`);
+    element.setAttribute("id", listId);
     return element;
   }
+
   listModule.createList("Study");
   displayLists();
 
@@ -139,7 +145,7 @@ const screenController = () => {
   }
   function createAddTaskBtn(id) {
     const addTaskBtn = createElement("button", "addTaskBtn", "+");
-    addTaskBtn.setAttribute("id", id);
+    addTaskBtn.setAttribute("id",id);
     contentInit.appendChild(addTaskBtn);
   }
 
