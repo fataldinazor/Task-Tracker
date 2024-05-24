@@ -55,5 +55,6 @@ const createHome=()=>{
     content.appendChild(contentInit);
 }
 
+// const contentInit=document.querySelector('.contentInit');
 export {createElement,createHome};
 
