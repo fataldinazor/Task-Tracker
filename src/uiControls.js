@@ -3,7 +3,8 @@
 import svg1 from "./assets/trash.svg";
 import * as taskModule from "./task.js";
 import * as listModule from "./list.js";
-import { createElement, createHome, contentInit } from "./homepage.js";
+import { createElement, createHome } from "./homepage.js";
+import { createPrjForm, createTaskForm } from "./forms.js"
 // import { Module } from "webpack";
 
 const screenController = () => {
@@ -14,33 +15,7 @@ const screenController = () => {
 
   //sideBar Functionality
   addPrjBtn.addEventListener("click", createPrjForm);
-  function createPrjForm() {
-    if (document.querySelector(".getPrjForm")) {
-      return;
-    }
-    const getPrjForm = createElement("form", "getPrjForm");
-    const nameLabel = createElement("label", "", "Project Name:");
-    nameLabel.setAttribute("for", "PrjName");
-    const nameInput = document.createElement("input");
-    nameInput.setAttribute("id", "PrjName");
-    nameInput.setAttribute("type", "text");
-    nameInput.setAttribute("name", "project_name");
-    const submitBtn = document.createElement("button");
-    submitBtn.setAttribute("type", "submit");
-    submitBtn.textContent = "Submit";
-    const resetBtn = document.createElement("button");
-    resetBtn.setAttribute("type", "reset");
-    resetBtn.textContent = "Reset";
-    nameLabel.appendChild(nameInput);
-    getPrjForm.appendChild(nameLabel);
-    prjList.appendChild(getPrjForm);
-
-    const btnContainer = createElement("div", "btnContainer");
-    btnContainer.appendChild(submitBtn);
-    btnContainer.appendChild(resetBtn);
-    getPrjForm.appendChild(btnContainer);
-    console.log("form created!");
-  }
+  // function createPrjForm() 
 
   document.addEventListener("submit", (event) => {
     if (event.target.classList.contains("getPrjForm")) submitPrjForm(event);
@@ -75,6 +50,7 @@ const screenController = () => {
     }
   });
 
+  // sidebar functions
   function submitPrjForm(e) {
     e.preventDefault();
     const formData = new FormData(e.target);
@@ -89,21 +65,9 @@ const screenController = () => {
   }
 
   function deletePrj(e) {
-    // console.log(e.target.parentElement.parentElement.className);
     listModule.deleteList(e.target.parentElement.parentElement.className);
     prjList.textContent = "";
     displayLists();
-  }
-
-  
-
-  function deleteTask(e) {
-    // console.log("Im here");
-    const taskId=(e.target.parentElement.parentElement.id);
-    const listId=(e.target.parentElement.parentElement.parentElement.id.slice(5));
-    taskModule.deleteTask(listId,taskId);
-    displayTasks();
-    
   }
 
   function displayLists() {
@@ -118,27 +82,26 @@ const screenController = () => {
       prjList.appendChild(newPrj);
     });
   }
-
+  
   function createTaskContainer(listId) {
     const element = createElement("div", "taskContainer");
-    element.setAttribute("id", listId);
+    element.setAttribute("id", `list-${listId}`);
     return element;
   }
-
+  
   listModule.createList("Study");
   displayLists();
-
+  
   //mainContent
   function getTask(e) {
     const listId = e.target.parentElement.id;
+    console.log(listId);
     createContent(listId);
-    // console.log(listId);
   }
   function createContent(listId) {
+    // const contentInit=document.querySelector('.contentInit');
     contentInit.innerHTML = "";
-    // createTaskContainer(`list-${listId}`)
-    const taskContainer=createElement('div','taskContainer');
-    taskContainer.setAttribute('id',`list-${listId}`);
+    const taskContainer=createTaskContainer(listId);
     contentInit.appendChild(taskContainer);
     createAddTaskBtn(listId);
     displayTasks(listId);
@@ -148,14 +111,14 @@ const screenController = () => {
     addTaskBtn.setAttribute("id",id);
     contentInit.appendChild(addTaskBtn);
   }
-
+  
   const getPriorColor = (prior) => {
     console.log("hello");
     if (prior === "high") return "FF0000";
     else if (prior === "mid") return "FFFF00";
     else if (prior === "low") return "00FF00";
   };
-
+  
   const displayTasks = (listId) => {
     const taskContainer=document.querySelector(`#list-${listId}`);
     taskContainer.textContent = "";
@@ -171,97 +134,31 @@ const screenController = () => {
       deleteTaskBtn.innerHTML = svg1;
       const color = getPriorColor(task.priority);
       taskPrior.style.backgroundColor = `#${color}`;
-
+      
       taskBlock.appendChild(taskTitle);
       taskBlock.appendChild(taskDesc);
       taskBlock.appendChild(taskDate);
       taskBlock.appendChild(taskPrior);
       taskBlock.appendChild(deleteTaskBtn);
-
+      
       taskContainer.appendChild(taskBlock);
     });
     contentInit.appendChild(taskContainer);
+    // if(taskContainer.textContent=''){
+    //   taskContainer.textContent='Click on the Add Button below to start Creating your Tasks';
+    // }
   };
 
-
-  const setElementAttribute = (element, id, type, name) => {
-    element.setAttribute("id", id);
-    element.setAttribute("type", type);
-    element.setAttribute("name", name);
-  };
-
-  function createTaskForm(listId) {
-    const idVal = createElement("input");
-    idVal.setAttribute("value", listId);
-    setElementAttribute(idVal, "", "hidden", "list_id");
-    const getDialog = createElement("dialog");
-    const getTaskForm = createElement("form", "getTaskForm");
-    const heading = createElement("h2", "", "Task");
-
-    //title
-    const titleLabel = createElement("label", "taskTitle", "Title:");
-    titleLabel.setAttribute("for", "taskTitle");
-    const titleInput = document.createElement("input");
-    setElementAttribute(titleInput, "taskTitle", "text", "task_name");
-    titleLabel.appendChild(titleInput);
-
-    //desc
-    const descLabel = createElement("label", "taskDesc", "Description:");
-    descLabel.setAttribute("for", "taskDesc");
-    const descInput = document.createElement("textarea");
-    descInput.setAttribute("rows", "4");
-    descInput.setAttribute("cols", "40");
-    setElementAttribute(descInput, "taskDesc", "text", "task_desc");
-    descLabel.appendChild(descInput);
-
-    //date
-    const dateLabel = createElement("label", "taskDate", "Due Date:");
-    dateLabel.setAttribute("for", "taskDate");
-    const dateInput = document.createElement("input");
-    setElementAttribute(dateInput, "taskDueDate", "date", "task_date");
-    dateLabel.appendChild(dateInput);
-
-    const priorLabel = createElement("label", "taskPrior", "Priority:");
-    priorLabel.setAttribute("for", "taskPrior");
-    const selectTask = createElement(
-      "select",
-      "",
-      "Select Priority of the Task"
-    );
-    selectTask.setAttribute("name", "task_prior");
-    const lowPrior = createElement("option", "", "Low");
-    lowPrior.setAttribute("value", "low");
-    const midPrior = createElement("option", "", "Medium");
-    midPrior.setAttribute("value", "mid");
-    const highPrior = createElement("option", "", "High");
-    highPrior.setAttribute("value", "high");
-    selectTask.appendChild(lowPrior);
-    selectTask.appendChild(midPrior);
-    selectTask.appendChild(highPrior);
-    priorLabel.appendChild(selectTask);
-    //buttons
-    const submitBtn = document.createElement("button");
-    submitBtn.setAttribute("type", "submit");
-    submitBtn.textContent = "Submit";
-    const resetBtn = document.createElement("button");
-    resetBtn.setAttribute("type", "reset");
-    resetBtn.textContent = "Reset";
-
-    // arranging the content
-    getDialog.appendChild(getTaskForm);
-    getTaskForm.appendChild(heading);
-    getTaskForm.appendChild(idVal);
-    getTaskForm.appendChild(titleLabel);
-    getTaskForm.appendChild(descLabel);
-    getTaskForm.appendChild(dateLabel);
-    getTaskForm.appendChild(priorLabel);
-    const btnContainer = createElement("div", "btnContainer");
-    btnContainer.appendChild(submitBtn);
-    btnContainer.appendChild(resetBtn);
-    getTaskForm.appendChild(btnContainer);
-    contentInit.appendChild(getDialog);
-    getDialog.showModal();
+  function deleteTask(e) {
+    // console.log("Im here");
+    const taskId=(e.target.parentElement.parentElement.id);
+    const listId=(e.target.parentElement.parentElement.parentElement.id.slice(5));
+    taskModule.deleteTask(listId,taskId);
+    displayTasks(listId);
   }
+
+  // const setElementAttribute = (element, id, type, name) 
+  // function createTaskForm(listId) 
 
   const submitTaskForm = (e) => {
     e.preventDefault();
