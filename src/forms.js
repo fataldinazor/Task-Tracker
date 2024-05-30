@@ -46,7 +46,7 @@ function createPrjForm() {
     setElementAttribute(idVal, "", "hidden", "list_id");
     const getDialog = createElement("dialog");
     const getTaskForm = createElement("form", "getTaskForm");
-    const heading = createElement("h2", "", "Task");
+    const heading = createElement("h2", "", "");
 
     //title
     const titleLabel = createElement("label", "taskTitle", "Title:");

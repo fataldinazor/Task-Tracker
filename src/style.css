@@ -32,6 +32,7 @@ button {
 }
 
 body {
+  background-color: var(--white2);
   padding: 0;
   margin: 0;
   height: 100vh;
@@ -65,6 +66,7 @@ body {
 
   display: flex;
   justify-content: space-between;
+  border-radius: 0 0px 20px 0px;
 }
 
 .webName {
@@ -77,14 +79,23 @@ body {
 }
 
 .logBtns {
+  margin-right: 2rem;
   display: flex;
-  gap: 1rem;
+  gap: 2rem;
   padding: 1rem 0;
+}
+
+.signBtn,.loginBtn{
+  /* border:1px solid var(--white1); */
+  align-self: center;
+  border-radius: 20px;
+  padding: 10px 20px;
+  background-color: var(--green2);
 }
 
 /* sidebar */
 .sidebar {
-  background-color: var(--mint2);
+  background-color: var(--mint3);
   color: var(--green2);
 
   grid-column: 1/2;
@@ -111,7 +122,7 @@ body {
 }
 
 .addPrjBtn {
-  background-color: var(--mint3);
+  background-color: var(--white1);
   padding: 0.2rem;
   font-size: 1.5rem;
   font-weight: 600;
@@ -131,7 +142,7 @@ body {
 .getPrjForm > .btnContainer > button {
   margin: 5px 0 0 0;
   border-radius: 10px;
-  background-color: var(--mint3);
+  background-color: var(--white1);
   padding: 3px 20px;
 }
 
@@ -141,7 +152,7 @@ body {
   border-radius: 10px;
   padding: 4px;
   border: none;
-  background-color: var(--white1);
+  background-color: var(--white2);
 }
 
 .newPrj {
@@ -150,7 +161,7 @@ body {
   font-size: 1rem;
   padding: 5px 10px;
   border-radius: 10px;
-  background-color: var(--mint3);
+  background-color: var(--white1);
 }
 .newPrj > .name {
   font-size: 1rem;
@@ -159,7 +170,7 @@ body {
 
 /* content */
 .content {
-  background-color: var(--white1);
+  background-color: var(--white);
   grid-column: 2/-1;
   grid-row: 2/-1;
 
@@ -177,63 +188,75 @@ body {
   font-size: 2rem;
   text-align: center;
   font-weight: 600;
-  color: white;
+  color:var(--green3);
 }
 
 .addTaskBtn {
   position: fixed;
   display: inline-block;
   background-color: #052e16;
+  color: var(--white2);
   padding: 9px 20px;
   border-radius: 40%;
   font-weight: 800;
   text-align: justify;
-  top: 90%;
-  left: 95%;
+  bottom:20px;
+  right:20px;
 }
 
 .taskContainer {
   display: flex;
   flex-direction: column;
-  gap: 10;
+  gap: 10px;
 }
 
 .taskBlock {
+  height: 7rem;
   display: grid;
   width: inherit;
-  grid-template-columns: 20px 4fr 1fr 40px;
+  grid-template-columns: 30px 3fr 1fr 1fr;
   grid-template-rows: 1fr 2fr;
-  column-gap: 10px;
-  background-color: var(--mint2);
-  padding: 10px 20px;
+  column-gap: 20px;
+  background-color: var(--white1);
   text-align: left;
   font-size: 2rem;
   font-weight: 400;
+  border-radius: 20px;
 }
 
 .dispTaskPrior{
   grid-column: 1/2;
   grid-row: 1/-1;
+  border-radius: 20px 0 0 20px;
 }
 .dispTaskTitle{
   grid-column: 2/3;
   grid-row: 1/2;
   font-size: 2rem;
-  font-weight: 600px;
+  font-weight: 600;
+
+  padding:5px 20px;
 }
 .dispTaskDesc{
   grid-column: 2/3;
   grid-row: 2/3;
   font-size: 1.2rem;
+
+  padding: 5px 20px
 }
 .dispTaskDate{
-  font-size: 1.5rem;
+  text-align: center;
+  font-size: 1.2rem;
   grid-column: 3/4;
   grid-row: 1/-1;
+  justify-self: center;
+  align-self: center;
 }
 .deleteTaskBtn{
   grid-column: 4/5;
   grid-row:1/-1;
+  align-self: center;
+  justify-self: center;
 }
 
 dialog {
@@ -293,3 +316,11 @@ textarea {
   border-radius: 10px;
   padding: 5px 10px;
 }
+
+select{
+  border: none;
+  background-color: var(--white1);
+  border-radius: 10px;
+  padding: 7px 10px;
+}
+

@@ -1,11 +1,11 @@
 "use strict";
 
 import svg1 from "./assets/trash.svg";
+import { format, differenceInDays } from "date-fns";
 import * as taskModule from "./task.js";
 import * as listModule from "./list.js";
 import { createElement, createHome } from "./homepage.js";
-import { createPrjForm, createTaskForm } from "./forms.js"
-// import { Module } from "webpack";
+import { createPrjForm, createTaskForm } from "./forms.js";
 
 const screenController = () => {
   window.addEventListener("load", createHome());
@@ -15,14 +15,16 @@ const screenController = () => {
 
   //sideBar Functionality
   addPrjBtn.addEventListener("click", createPrjForm);
-  // function createPrjForm() 
+  // function createPrjForm()
 
+  //handle form submission
   document.addEventListener("submit", (event) => {
     if (event.target.classList.contains("getPrjForm")) submitPrjForm(event);
     else if (event.target.classList.contains("getTaskForm"))
       submitTaskForm(event);
   });
 
+  // handle project list clicks
   prjList.addEventListener("click", function (event) {
     if (
       event.target.classList.contains("trashIcon") ||
@@ -31,6 +33,7 @@ const screenController = () => {
       deletePrj(event);
   });
 
+  //handle main content click events
   document.addEventListener("click", function (event) {
     if (event.target.classList.contains("listName")) {
       getTask(event);
@@ -41,8 +44,11 @@ const screenController = () => {
       event.target.closest(".deleteTaskBtn")
     )
       deleteTask(event);
+    else if (event.target.parentElement.classList.contains("taskBlock"))
+      editTask(event);
   });
 
+  //handle esc key to close dialogs
   document.addEventListener("keydown", function (event) {
     if (event.key === "Esc" || event.key === "Escape") {
       const dialog = document.querySelector("dialog");
@@ -51,6 +57,7 @@ const screenController = () => {
   });
 
   // sidebar functions
+  //form submission for projects
   function submitPrjForm(e) {
     e.preventDefault();
     const formData = new FormData(e.target);
@@ -64,12 +71,14 @@ const screenController = () => {
     e.target.remove();
   }
 
+  //delete Project
   function deletePrj(e) {
     listModule.deleteList(e.target.parentElement.parentElement.className);
     prjList.textContent = "";
     displayLists();
   }
 
+  // displayLists
   function displayLists() {
     listModule.lists.forEach((list) => {
       const newPrj = createElement("div", "newPrj");
@@ -82,83 +91,120 @@ const screenController = () => {
       prjList.appendChild(newPrj);
     });
   }
-  
+
+  // create Task Container
   function createTaskContainer(listId) {
     const element = createElement("div", "taskContainer");
     element.setAttribute("id", `list-${listId}`);
     return element;
   }
-  
-  listModule.createList("Study");
-  displayLists();
-  
+
   //mainContent
+  // get task for a project
   function getTask(e) {
     const listId = e.target.parentElement.id;
     console.log(listId);
     createContent(listId);
   }
   function createContent(listId) {
-    // const contentInit=document.querySelector('.contentInit');
     contentInit.innerHTML = "";
-    const taskContainer=createTaskContainer(listId);
+    const taskContainer = createTaskContainer(listId);
     contentInit.appendChild(taskContainer);
     createAddTaskBtn(listId);
     displayTasks(listId);
   }
-  function createAddTaskBtn(id) {
+
+  function createAddTaskBtn(listId) {
     const addTaskBtn = createElement("button", "addTaskBtn", "+");
-    addTaskBtn.setAttribute("id",id);
+    addTaskBtn.setAttribute("id", listId);
     contentInit.appendChild(addTaskBtn);
   }
-  
+
   const getPriorColor = (prior) => {
     console.log("hello");
     if (prior === "high") return "FF0000";
     else if (prior === "mid") return "FFFF00";
     else if (prior === "low") return "00FF00";
   };
-  
+
+  const truncateString = (str) => {
+    if (str.length > 35) str = `${str.slice(0, 35)}...`;
+    return str;
+  };
+
+  const timeRemaining = (dateDiff) => {
+    if (dateDiff < 0) {
+      return `The task was due ${dateDiff} days ago`;
+    } else if (dateDiff > 0) {
+      return `The task is due in ${dateDiff} days`;
+    } else if (dateDiff === 0) {
+      return `The task is due today`;
+    }
+  };
+
   const displayTasks = (listId) => {
-    const taskContainer=document.querySelector(`#list-${listId}`);
+    const taskContainer = document.querySelector(`#list-${listId}`);
     taskContainer.textContent = "";
     const list = listModule.getList(listId);
-    list["tasks"].forEach((task) => {
-      const taskBlock = createElement("div", "taskBlock");
-      taskBlock.setAttribute("id", task.id);
-      const taskTitle = createElement("div", "dispTaskTitle", task.title);
-      const taskDesc = createElement("div", "dispTaskDesc", task.desc);
-      const taskDate = createElement("div", "dispTaskDate", task.dueDate);
-      const taskPrior = createElement("div", "dispTaskPrior");
-      const deleteTaskBtn = createElement("div", "deleteTaskBtn");
-      deleteTaskBtn.innerHTML = svg1;
-      const color = getPriorColor(task.priority);
-      taskPrior.style.backgroundColor = `#${color}`;
-      
-      taskBlock.appendChild(taskTitle);
-      taskBlock.appendChild(taskDesc);
-      taskBlock.appendChild(taskDate);
-      taskBlock.appendChild(taskPrior);
-      taskBlock.appendChild(deleteTaskBtn);
-      
-      taskContainer.appendChild(taskBlock);
-    });
-    contentInit.appendChild(taskContainer);
-    // if(taskContainer.textContent=''){
-    //   taskContainer.textContent='Click on the Add Button below to start Creating your Tasks';
-    // }
+    if (list["tasks"].length === 0) {
+      taskContainer.textContent =
+        "Click on the Add Button below to start Creating your Tasks";
+    } else {
+      list["tasks"].forEach((task) => {
+        const currDate = new Date();
+        const taskDueDate = task.dueDate;
+        const diffDate = differenceInDays(taskDueDate, currDate);
+
+        const taskBlock = createElement("div", "taskBlock");
+        taskBlock.setAttribute("id", task.id);
+        const taskTitle = createElement("div", "dispTaskTitle", task.title);
+        const taskDesc = createElement(
+          "div",
+          "dispTaskDesc",
+          truncateString(task.desc)
+        );
+        const taskDate = createElement(
+          "div",
+          "dispTaskDate",
+          // format(new Date(task.dueDate), "MM-dd-yyyy")
+          timeRemaining(diffDate)
+        );
+        const taskPrior = createElement("div", "dispTaskPrior");
+        const deleteTaskBtn = createElement("div", "deleteTaskBtn");
+        deleteTaskBtn.innerHTML = svg1;
+        const color = getPriorColor(task.priority);
+        taskPrior.style.backgroundColor = `#${color}`;
+
+        taskBlock.appendChild(taskTitle);
+        taskBlock.appendChild(taskDesc);
+        taskBlock.appendChild(taskDate);
+        taskBlock.appendChild(taskPrior);
+        taskBlock.appendChild(deleteTaskBtn);
+
+        taskContainer.appendChild(taskBlock);
+      });
+    }
+    // contentInit.appendChild(taskContainer);
   };
 
   function deleteTask(e) {
     // console.log("Im here");
-    const taskId=(e.target.parentElement.parentElement.id);
-    const listId=(e.target.parentElement.parentElement.parentElement.id.slice(5));
-    taskModule.deleteTask(listId,taskId);
+    const taskId = e.target.parentElement.parentElement.id;
+    const listId =
+      e.target.parentElement.parentElement.parentElement.id.slice(5);
+    taskModule.deleteTask(listId, taskId);
     displayTasks(listId);
   }
 
-  // const setElementAttribute = (element, id, type, name) 
-  // function createTaskForm(listId) 
+  function editTask(event){
+    const taskId=event.target.parentElement.id;
+    const listId=event.target.parentElement.parentElement.id.slice(5);
+    currTask=taskModule.getTask(listId,taskId);
+    
+  }
+
+  // const setElementAttribute = (element, id, type, name)
+  // function createTaskForm(listId)
 
   const submitTaskForm = (e) => {
     e.preventDefault();
@@ -178,6 +224,21 @@ const screenController = () => {
     contentInit.removeChild(dialog);
     displayTasks(listId);
   };
-};
 
+  listModule.createList("Study");
+  displayLists();
+  listModule.lists.forEach((list) => {
+    if (list.name === "Study") {
+      const listId = list.id;
+      taskModule.createTask(
+        listId,
+        "Exam",
+        "Study for the exam scheduled next week",
+        "06-05-2024",
+        "high"
+      );
+      displayTasks(listId);
+    }
+  });
+};
 export { screenController };

@@ -2,15 +2,16 @@
   "name": "alternate-todolist",
   "version": "1.0.0",
   "description": "to-doList",
-  "private":"true",
+  "private": "true",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build":"webpack --watch"
+    "build": "webpack --watch"
   },
   "author": "fataldinazor",
   "license": "ISC",
   "devDependencies": {
     "css-loader": "^7.1.1",
+    "date-fns": "^3.6.0",
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.6.0",
     "raw-loader": "^4.0.2",
