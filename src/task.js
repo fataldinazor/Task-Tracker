@@ -32,16 +32,23 @@ const markComplete = (listId, taskId) => {
   const list = getList(listId);
   const task = getTask(listId, taskId);
   const taskIndex = getTaskIndex(listId, taskId);
-  // task.complete=true;
   list[completed].unshift(task);
   list.tasks.splice(taskIndex, 1);
 };
 
-const getTask = (listId, taskId) => {
+const getTask = (listId, taskId,) => {
   const list = getList(listId);
   const task = list["tasks"].find((task) => task.id === taskId);
   return task;
 };
+
+const updateTask=(listId, taskId, title, desc, dueDate, priority)=>{
+  const task=getTask(listId, taskId);
+  task.title=title;
+  task.desc=desc;
+  task.dueDate=dueDate;
+  task.priority=priority;
+}
 
 const getTaskIndex = (listId, taskId) => {
   const list = getList(listId);
@@ -49,4 +56,4 @@ const getTaskIndex = (listId, taskId) => {
   return taskIndex;
 };
 
-export { createTask, getTask, getTaskIndex, deleteTask, markComplete };
+export { createTask, getTask, getTaskIndex, deleteTask, markComplete,updateTask };

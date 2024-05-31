@@ -5,7 +5,7 @@ import { format, differenceInDays } from "date-fns";
 import * as taskModule from "./task.js";
 import * as listModule from "./list.js";
 import { createElement, createHome } from "./homepage.js";
-import { createPrjForm, createTaskForm } from "./forms.js";
+import { createPrjForm, createTaskForm, editTaskForm } from "./forms.js";
 
 const screenController = () => {
   window.addEventListener("load", createHome());
@@ -15,13 +15,14 @@ const screenController = () => {
 
   //sideBar Functionality
   addPrjBtn.addEventListener("click", createPrjForm);
-  // function createPrjForm()
 
   //handle form submission
   document.addEventListener("submit", (event) => {
     if (event.target.classList.contains("getPrjForm")) submitPrjForm(event);
     else if (event.target.classList.contains("getTaskForm"))
       submitTaskForm(event);
+    else if (event.target.classList.contains("editTaskForm"))
+      submitEditedTaskForm(event);
   });
 
   // handle project list clicks
@@ -39,14 +40,25 @@ const screenController = () => {
       getTask(event);
     } else if (event.target.classList.contains("addTaskBtn")) {
       createTaskForm(event.target.id);
-    } else if (
-      // event.target.classList.contains("deleteTaskBtn")
-      event.target.closest(".deleteTaskBtn")
+    } else if (event.target.closest(".deleteTaskBtn")) deleteTask(event);
+    else if (
+      event.target.parentElement.classList.contains("taskBlock") &&
+      !event.target.classList.contains("completeCheck")
     )
-      deleteTask(event);
-    else if (event.target.parentElement.classList.contains("taskBlock"))
       editTask(event);
+    else if (event.target.classList.contains("completeCheck")) {
+      completedTasks(event);
+    }
   });
+
+  function completedTasks(event) {
+    const parentElement = event.target.parentElement;
+    if (event.target.checked) {
+      parentElement.classList.add("disable");
+    } else {
+      parentElement.classList.remove("disable");
+    }
+  }
 
   //handle esc key to close dialogs
   document.addEventListener("keydown", function (event) {
@@ -103,7 +115,6 @@ const screenController = () => {
   // get task for a project
   function getTask(e) {
     const listId = e.target.parentElement.id;
-    console.log(listId);
     createContent(listId);
   }
   function createContent(listId) {
@@ -121,7 +132,6 @@ const screenController = () => {
   }
 
   const getPriorColor = (prior) => {
-    console.log("hello");
     if (prior === "high") return "FF0000";
     else if (prior === "mid") return "FFFF00";
     else if (prior === "low") return "00FF00";
@@ -134,7 +144,7 @@ const screenController = () => {
 
   const timeRemaining = (dateDiff) => {
     if (dateDiff < 0) {
-      return `The task was due ${dateDiff} days ago`;
+      return `The task was due ${abs(dateDiff)} days ago`;
     } else if (dateDiff > 0) {
       return `The task is due in ${dateDiff} days`;
     } else if (dateDiff === 0) {
@@ -144,6 +154,10 @@ const screenController = () => {
 
   const displayTasks = (listId) => {
     const taskContainer = document.querySelector(`#list-${listId}`);
+    if (!taskContainer) {
+      console.warn("Task Container is not yet created");
+      return;
+    }
     taskContainer.textContent = "";
     const list = listModule.getList(listId);
     if (list["tasks"].length === 0) {
@@ -163,10 +177,11 @@ const screenController = () => {
           "dispTaskDesc",
           truncateString(task.desc)
         );
+        const checkBox = createElement("input", "completeCheck");
+        checkBox.setAttribute("type", "checkbox");
         const taskDate = createElement(
           "div",
           "dispTaskDate",
-          // format(new Date(task.dueDate), "MM-dd-yyyy")
           timeRemaining(diffDate)
         );
         const taskPrior = createElement("div", "dispTaskPrior");
@@ -179,16 +194,15 @@ const screenController = () => {
         taskBlock.appendChild(taskDesc);
         taskBlock.appendChild(taskDate);
         taskBlock.appendChild(taskPrior);
+        taskBlock.appendChild(checkBox);
         taskBlock.appendChild(deleteTaskBtn);
 
         taskContainer.appendChild(taskBlock);
       });
     }
-    // contentInit.appendChild(taskContainer);
   };
 
   function deleteTask(e) {
-    // console.log("Im here");
     const taskId = e.target.parentElement.parentElement.id;
     const listId =
       e.target.parentElement.parentElement.parentElement.id.slice(5);
@@ -196,21 +210,17 @@ const screenController = () => {
     displayTasks(listId);
   }
 
-  function editTask(event){
-    const taskId=event.target.parentElement.id;
-    const listId=event.target.parentElement.parentElement.id.slice(5);
-    currTask=taskModule.getTask(listId,taskId);
-    
+  function editTask(event) {
+    const taskId = event.target.parentElement.id;
+    const listId = event.target.parentElement.parentElement.id.slice(5);
+    const currTask = taskModule.getTask(listId, taskId);
+    editTaskForm(currTask);
   }
-
-  // const setElementAttribute = (element, id, type, name)
-  // function createTaskForm(listId)
 
   const submitTaskForm = (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const listId = formData.get("list_id");
-    // const list=listModule.getList(listId);
     const taskTitle = formData.get("task_name");
     const taskDesc = formData.get("task_desc");
     const dueDate = formData.get("task_date");
@@ -225,6 +235,33 @@ const screenController = () => {
     displayTasks(listId);
   };
 
+  const submitEditedTaskForm = (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const taskId = formData.get("task_id");
+    const listId = formData.get("list_id");
+    const taskTitle = formData.get("task_name");
+    const taskDesc = formData.get("task_desc");
+    const dueDate = formData.get("task_date");
+    const taskPrior = formData.get("task_prior");
+    if (listId && taskTitle && taskDesc && dueDate && taskPrior) {
+      taskModule.updateTask(
+        listId,
+        taskId,
+        taskTitle,
+        taskDesc,
+        dueDate,
+        taskPrior
+      );
+      console.log(listModule.lists);
+    }
+    const dialog = document.querySelector("dialog");
+    dialog.close();
+    contentInit.removeChild(dialog);
+    displayTasks(listId);
+  };
+  const checkBox = document.querySelector(".completeCheck");
+
   listModule.createList("Study");
   displayLists();
   listModule.lists.forEach((list) => {
@@ -234,7 +271,7 @@ const screenController = () => {
         listId,
         "Exam",
         "Study for the exam scheduled next week",
-        "06-05-2024",
+        "2024-06-05",
         "high"
       );
       displayTasks(listId);

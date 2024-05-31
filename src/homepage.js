@@ -24,7 +24,7 @@ const createHome=()=>{
     const header = createElement("div", "header");
     container.appendChild(header);
 
-    const webName = createElement("div", "webName", "Sample");
+    const webName = createElement("div", "webName", "sample");
     const logBtns = createElement("div", "logBtns");
     const signBtn = createElement("button", "signBtn", "Sign Up");
     const loginBtn = createElement("button", "loginBtn", "Log In");
@@ -55,6 +55,5 @@ const createHome=()=>{
     content.appendChild(contentInit);
 }
 
-// const contentInit=document.querySelector('.contentInit');
 export {createElement,createHome};
 

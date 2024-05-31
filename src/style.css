@@ -67,6 +67,8 @@ body {
   display: flex;
   justify-content: space-between;
   border-radius: 0 0px 20px 0px;
+
+  box-shadow: var(--shadow-lg);
 }
 
 .webName {
@@ -85,8 +87,8 @@ body {
   padding: 1rem 0;
 }
 
-.signBtn,.loginBtn{
-  /* border:1px solid var(--white1); */
+.signBtn,
+.loginBtn {
   align-self: center;
   border-radius: 20px;
   padding: 10px 20px;
@@ -107,6 +109,9 @@ body {
   flex-direction: column;
   justify-content: flex-start;
   gap: 0.5rem;
+
+  border-radius: 0  10px 10px 0;
+  box-shadow: var(--shadow-lg);
 }
 
 .prjTitle {
@@ -180,15 +185,12 @@ body {
 }
 
 .contentInit {
-  /* display: flex;
-  flex-direction: column;
-  gap: 10px; */
   justify-self: start;
 
   font-size: 2rem;
   text-align: center;
   font-weight: 600;
-  color:var(--green3);
+  color: var(--green3);
 }
 
 .addTaskBtn {
@@ -200,8 +202,8 @@ body {
   border-radius: 40%;
   font-weight: 800;
   text-align: justify;
-  bottom:20px;
-  right:20px;
+  bottom: 20px;
+  right: 20px;
 }
 
 .taskContainer {
@@ -214,7 +216,7 @@ body {
   height: 7rem;
   display: grid;
   width: inherit;
-  grid-template-columns: 30px 3fr 1fr 1fr;
+  grid-template-columns: 30px 20px 3fr 1fr 1fr;
   grid-template-rows: 1fr 2fr;
   column-gap: 20px;
   background-color: var(--white1);
@@ -222,39 +224,49 @@ body {
   font-size: 2rem;
   font-weight: 400;
   border-radius: 20px;
+  box-shadow: var(--shadow);
 }
 
-.dispTaskPrior{
+.dispTaskPrior {
   grid-column: 1/2;
   grid-row: 1/-1;
   border-radius: 20px 0 0 20px;
 }
-.dispTaskTitle{
+
+.completeCheck {
   grid-column: 2/3;
+  grid-row: 1/-1;
+}
+
+.dispTaskTitle {
+  grid-column: 3/4;
   grid-row: 1/2;
+
   font-size: 2rem;
   font-weight: 600;
-
-  padding:5px 20px;
+  padding: 5px 20px;
 }
-.dispTaskDesc{
-  grid-column: 2/3;
+
+.dispTaskDesc {
+  grid-column: 3/4;
   grid-row: 2/3;
   font-size: 1.2rem;
 
-  padding: 5px 20px
+  padding: 5px 20px;
 }
-.dispTaskDate{
+
+.dispTaskDate {
   text-align: center;
   font-size: 1.2rem;
-  grid-column: 3/4;
+  grid-column: 4/5;
   grid-row: 1/-1;
   justify-self: center;
   align-self: center;
 }
-.deleteTaskBtn{
-  grid-column: 4/5;
-  grid-row:1/-1;
+
+.deleteTaskBtn {
+  grid-column: 5/6;
+  grid-row: 1/-1;
   align-self: center;
   justify-self: center;
 }
@@ -271,6 +283,7 @@ dialog::backdrop {
   opacity: 50%;
 }
 
+.editTaskForm,
 .getTaskForm {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -280,6 +293,7 @@ dialog::backdrop {
   background-color: var(--mint3);
 }
 
+.editTaskForm > label,
 .getTaskForm > label {
   display: flex;
   flex-direction: column;
@@ -288,18 +302,29 @@ dialog::backdrop {
 }
 
 h2,
-.getTaskForm>.taskTitle,
-.getTaskForm>.taskDesc,
+.editTaskForm > .taskTitle,
+.editTaskForm > .taskDesc,
+.editTaskForm > .btnContainer,
+.getTaskForm > .taskTitle,
+.getTaskForm > .taskDesc,
 .getTaskForm > .btnContainer {
   grid-column: 1/3;
 }
 
+h2{
+  font-size: 3rem;
+  color: var(--green1);
+}
+
+.editTaskForm > .btnContainer,
 .getTaskForm > .btnContainer {
   display: grid;
   grid-template-columns: 1fr 1fr;
   column-gap: 20px;
   margin-top: 20px;
 }
+
+.editTaskForm > .btnContainer > button,
 .getTaskForm > .btnContainer > button {
   justify-self: center;
   font-size: 1rem;
@@ -309,6 +334,7 @@ h2,
   color: var(--white2);
 }
 
+.editTaskForm > label > input,
 .getTaskForm > label > input,
 textarea {
   border: none;
@@ -317,10 +343,14 @@ textarea {
   padding: 5px 10px;
 }
 
-select{
+select {
   border: none;
   background-color: var(--white1);
   border-radius: 10px;
   padding: 7px 10px;
 }
 
+.disable {
+  opacity: 50%;
+  text-decoration: line-through;
+}
