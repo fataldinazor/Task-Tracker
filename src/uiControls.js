@@ -144,7 +144,7 @@ const screenController = () => {
 
   const timeRemaining = (dateDiff) => {
     if (dateDiff < 0) {
-      return `The task was due ${abs(dateDiff)} days ago`;
+      return `The task was due ${Math.abs(dateDiff)} days ago`;
     } else if (dateDiff > 0) {
       return `The task is due in ${dateDiff} days`;
     } else if (dateDiff === 0) {

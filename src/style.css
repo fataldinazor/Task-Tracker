@@ -213,11 +213,10 @@ body {
 }
 
 .taskBlock {
-  height: 7rem;
   display: grid;
   width: inherit;
   grid-template-columns: 30px 20px 3fr 1fr 1fr;
-  grid-template-rows: 1fr 2fr;
+  grid-template-rows: 50px 1fr;
   column-gap: 20px;
   background-color: var(--white1);
   text-align: left;
@@ -252,7 +251,7 @@ body {
   grid-row: 2/3;
   font-size: 1.2rem;
 
-  padding: 5px 20px;
+  padding: 10px 20px;
 }
 
 .dispTaskDate {
