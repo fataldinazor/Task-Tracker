@@ -24,7 +24,7 @@ const createHome=()=>{
     const header = createElement("div", "header");
     container.appendChild(header);
 
-    const webName = createElement("div", "webName", "sample");
+    const webName = createElement("div", "webName", "To Do List");
     const logBtns = createElement("div", "logBtns");
     const signBtn = createElement("button", "signBtn", "Sign Up");
     const loginBtn = createElement("button", "loginBtn", "Log In");
